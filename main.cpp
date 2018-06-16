@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "timers.h"
 #include "toggle.h"
+#include "line.h"
 
 #define BAUDRATE 9600
 #define BOOT_DELAY 6000
@@ -10,7 +11,7 @@
 #define MINUTE 60
 
 unsigned char ledPin = 13;              // LED connected to digital pin 13
-unsigned char phase[3] = {2,9,10};      // phase input pins, 0, 1, 2
+unsigned char phase[3] = {P0,P1,G0};    // phase input pins, 0, 1, 2
 unsigned char conn[3] = {14,11,16};     // phase selector pins, 0, 1, 2
 unsigned char generator = 12;           // generator start signal output pin
 unsigned char phaseStatus[3] = {1,1,1};
@@ -22,12 +23,13 @@ timer blinkTimer;
 timer batTimer;
 timer compTimer;
 timer printTimer;
+line lineControl;
 
 toggle blinker;
 
 void readVBat() {
     int aux = analogRead(vBatPin);
-    vBat = 15.0 * (float) aux / 1024.0;
+    vBat = 16.0 * (float) aux / 1024.0;
     if(vBat <= 12.4) {
         error = 1;
         Serial.print("vBat LOW!: ");
@@ -43,73 +45,6 @@ void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
     for(i=0; i < num; i++)
         pinMode(pins[i],mode);
 }
-
-bool checkPhases() {
-    unsigned char phaseSampleA[3] = {0,0,0};
-    unsigned char phaseSampleB[3] = {0,0,0};
-    unsigned char phaseSampleC[3] = {0,0,0};
-    unsigned char phaseChange[3]  = {0,0,0};
-    unsigned char i = 0;
-    unsigned char j = 0;
-    bool changed = false;
-
-    for(i=0; i < 3; i++) 
-        phaseSampleA[i] = digitalRead(phase[i]);
-    for(i=0; i < 3; i++) 
-        phaseSampleB[i] = digitalRead(phase[i]);
-    for(i=0; i < 3; i++) 
-        phaseSampleC[i] = digitalRead(phase[i]);
-   
-    for(i=0; i < 3; i++) 
-        phaseChange[i] = phaseSampleA[i] | phaseSampleB[i] | phaseSampleC[i];
-
-    for(i=0; i < 3; i++) {
-        if(phaseStatus[i] != phaseChange[i])
-             changed = true;
-        phaseStatus[i] = phaseChange[i];
-    }
-    return changed;
-}
-
-bool printLog() {
-    if(printTimer.event()) {
-        printTimer.reset();
-        return true;
-    } else {
-        printTimer.update();
-        return false;
-    }
-}   
-        
-
-void phaseUpdate() {
-   unsigned char i,j = 0;
-   bool phaseLog = printLog();  
-   bool changed = checkPhases();
-
-   if(phaseStatus[0] == 0 && phaseStatus[1] == 0) {
-       if(changed) 
-           Serial.print("No power present in the mains, starting generator ...\n");
-       generator = 1;
-   } else {
-       if(changed) 
-           Serial.print("Power present, reconnecting to the mains ...\n");
-       generator = 0;
-   }        
-    
-   for(i=0; i < 3; i++) {
-       if (phaseStatus[i] == 0) {
-           if(changed) {
-               j = i + 1;
-               Serial.print("Phase ");
-               Serial.print(j);
-               Serial.print(": disconnected\n");
-           }
-       }
-   }
-
-}
-
 
 void setup() {
 
@@ -170,7 +105,8 @@ void loop() {
     ledDrive();
     batDrive();
     errorDrive();
-    phaseUpdate();
+    lineControl.update();
+//    phaseUpdate();
 }
 
 int main(void) {
