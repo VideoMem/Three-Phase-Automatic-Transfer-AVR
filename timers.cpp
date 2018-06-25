@@ -53,13 +53,6 @@ int timer::event() {
   return 0;
 }
 
-int timer::rotator(int modulus) {
- int divs = preset / modulus;
- int scale = elapsed / divs;
- int rot = scale % modulus; 
- return rot;
-}
-
 void timer::setMS(unsigned long value) {
    preset = value; 
    enabled = 1;
@@ -71,6 +64,17 @@ void timer::setS(unsigned int s) {
 }
 
 void timer::reset() {
+  update();
   elapsed = 0;
+  trigged = 0;
+}
+
+void timer::enable() {
+  reset();
+}
+
+void timer::disable() {
+  reset();
+  enabled = 0;
 }
 

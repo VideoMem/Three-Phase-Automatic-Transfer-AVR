@@ -19,11 +19,9 @@ class timer {
    unsigned long valueMS();
    unsigned long valueS();
    int event();
-   int rotator(int modulus);
    
  private:
   void check();
- 
   unsigned long last_read;
   unsigned long elapsed;
   unsigned long preset;

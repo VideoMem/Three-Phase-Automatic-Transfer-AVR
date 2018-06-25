@@ -3,12 +3,12 @@
 #include "toggle.h"
 #include "line.h"
 
-#define BAUDRATE 9600
 #define BOOT_DELAY 6000
 #define COMP_DELAY 180
 #define NO_ERROR 500
 #define ON_ERROR 50
 #define MINUTE 60
+#define BAUDRATE 9600
 
 unsigned char ledPin = 13;              // LED connected to digital pin 13
 unsigned char phase[3] = {P0,P1,G0};    // phase input pins, 0, 1, 2
@@ -47,8 +47,7 @@ void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
 }
 
 void setup() {
-
-    Serial.begin(BAUDRATE);   
+    Serial.begin(BAUDRATE); 
     Serial.print("Initializing ... ");
     pinMode(ledPin, OUTPUT);
 
