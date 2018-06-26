@@ -87,13 +87,37 @@ bool line::checkPhases() {
 
 //abnormal line condition
 bool line::fail() {
-    if(status[0] == DIS && status[1] == CON) {
+
+    if(status[2] == DIS && status[0] == CON && status[1] == DIS) {
+        abnormalMSG();
         return true;
     }
 
-    if(status[0] == CON && status[1] == DIS) {
+    if(status[2] == DIS && status[0] == DIS && status[1] == CON) {
+        abnormalMSG();
         return true;
     }
+
+    if(status[2] == DIS && status[0] == CON && status[1] == CON) {
+        abnormalMSG();
+        return true;
+    }
+
+    if(status[2] == CON && status[0] == DIS && status[1] == DIS) {
+        abnormalMSG();
+        return true;
+    }
+
+    if(status[2] == CON && status[0] == CON && status[1] == DIS) {
+        abnormalMSG();
+        return true;
+    }
+
+    if(status[2] == CON && status[0] == DIS && status[1] == CON) {
+        abnormalMSG();
+        return true;
+    }
+
     return false;
 }
 
