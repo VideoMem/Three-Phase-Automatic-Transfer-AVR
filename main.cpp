@@ -47,7 +47,7 @@ void setup() {
     Serial.print("Initializing ... ");
     pinMode(ledPin, OUTPUT);
 
-    initPins(phase, INPUT, 3);
+    initPins(phase, INPUT, LINES);
     //initPins(conn, OUTPUT, 3);
     pinMode(generator, OUTPUT);
    
@@ -62,6 +62,10 @@ void setup() {
     Serial.flush();
     delay(BOOT_DELAY);
     Serial.print("Done\n");
+}
+
+void outputPatch() {
+    lineControl.genStart() ? digitalWrite(generator,HIGH): digitalWrite(generator,LOW);
 }
 
 void ledDrive() {
@@ -99,6 +103,7 @@ void loop() {
     batDrive();
     errorDrive();
     lineControl.update();
+    outputPatch();
 }
 
 int main(void) {
