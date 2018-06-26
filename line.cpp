@@ -4,51 +4,36 @@
 #define DIS 0
 
 void line::setup() {
-    unsigned char threezeros[3] = {CON,CON,CON};
-    unsigned char ninezeros[9] = {CON,CON,CON,CON,CON,CON,CON,CON,CON};
-    unsigned char phases[3] = {P0,P1,G0};
+    // some[size] = phases[size]; many[size] = some[size] * 3
+    unsigned char some[LINES] = {CON,CON,CON,CON};
+    unsigned char many[INITP] = {CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON};
+    unsigned char phases[LINES] = {P0,P1,P2,G0};
     sampleIndex = 0;
-    memcpy(status,threezeros,sizeof(unsigned char) * 3);
-    memcpy(sample,ninezeros,sizeof(unsigned char) * 9);
-    memcpy(phase,phases,sizeof(unsigned char) * 3);
+    memcpy(status,some,sizeof(unsigned char) * LINES);
+    memcpy(sample,many,sizeof(unsigned char) * INITP);
+    memcpy(phase,phases,sizeof(unsigned char) * LINES);
     sampleTimer.setMS(SAMPLE_INTERVAL);
-    genTimer.setS(GEN_SAFE);
-    compressorTimer.setS(COMP_SAFE);
-    state = S_LDIS;
     sampleTimer.reset();
-    compressorTimer.reset();
-    genTimer.reset(); 
 }
 
 //generator start signal
 bool line::genStart() {
-    if(status[2] == DIS)
+    if(status[3] == DIS)
         return true;
     else
         return false;
 }
 
 bool line::genStarted() {
-    if(status[2] == CON)
-        return true;
-    else
-        return false;
+    return !genStart();
 }
 
+// line present (Lp)
 bool line::Ok() {
-    if(status[0] == DIS || status[1] == DIS)
+    if(status[0] == DIS || status[1] == DIS || status[2] == DIS)
         return false;
     else
         return true;
-}
-
-
-//connect generator signal
-bool line::genConnect() {
-    if(genStarted() && state == S_GRED)
-        return true;
-    else
-        return false;
 }
 
 void line::generatorMSG() {
@@ -59,60 +44,38 @@ void line::mainsMSG() {
     Serial.print("Power present, reconnecting to the mains ...\n");          
 }
 
-//connect line signal
-bool line::linConnect() {
-    if(Ok() && state == S_LINE)
-        return true;
-    else
-        return false;
-}
-
-//power is ready
-bool line::ready() {
-    if(state == S_RLIN || state == S_RGEN) 
-        return true;
-    else
-        return false;
-}
-
-//power present
-bool line::present() {
-    if(state == S_GRED || state == S_LINE)
-        return true;
-    else
-        return false;
+void line::abnormalMSG() {
+    Serial.print("Abnormal power input!\n");
 }
 
 line::line() {
     setup();    
-    if(Ok()) 
-        state = S_LINE;
-    else
-        state = S_LGEN;
 }
 
 //phase sample & status update
 bool line::checkPhases() {
-    unsigned char phaseChange[3]  = {DIS,DIS,DIS};
+    unsigned char phaseChange[LINES]  = {DIS,DIS,DIS,DIS};
     unsigned char i = 0;
     unsigned char j = 0;
     unsigned char k = 0;
     unsigned char l = 0;
-    unsigned char limit = sampleIndex + 3;
+    unsigned char m = 0;
+    unsigned char limit = sampleIndex + LINES;
     bool changed = false;
 
-    if (sampleIndex < 9) {
+    if (sampleIndex < INITP) {
         for(i=sampleIndex; i < limit; i++) {  
             l = i - sampleIndex;
             sample[i] = digitalRead(phase[l]);
         }
-        sampleIndex += 3;
+        sampleIndex += LINES;
     } else {
         sampleIndex = 0;
-        for(i=0; i < 3; i++) {
-            j = i + 3;
-            k = i + 6;
-            phaseChange[i] = sample[i] | sample[j] | sample[k];
+        for(i=0; i < LINES; i++) {
+            j = i + LINES;
+            k = i + LINES2;
+            m = i + LINES3;
+            phaseChange[i] = sample[i] | sample[j] | sample[k] | sample[m];
             if(status[i] != phaseChange[i])
                  changed = true;
             status[i] = phaseChange[i];
@@ -125,12 +88,10 @@ bool line::checkPhases() {
 //abnormal line condition
 bool line::fail() {
     if(status[0] == DIS && status[1] == CON) {
-        Serial.print("Abnormal power input!\n");
         return true;
     }
 
     if(status[0] == CON && status[1] == DIS) {
-        Serial.print("Abnormal power input!\n");
         return true;
     }
     return false;
@@ -141,7 +102,7 @@ void line::phaseUpdate() {
     unsigned char i,j = 0;
     bool failure = fail();
 
-    for(i=0; i < 3; i++) {
+    for(i=0; i < LINES; i++) {
         if (status[i] == DIS) {
             j = i + 1;
             Serial.print("Phase ");
@@ -151,21 +112,15 @@ void line::phaseUpdate() {
     }
     
     if(failure) {
-        state = S_ABNR;
         return;
     }
 
     if(!Ok()) {
         if(genStart()) {
             generatorMSG();
-            state = S_LGEN;
         }
     } else {
         mainsMSG();
-        if(state == S_RGEN)
-            state = S_RLIN;
-        else
-            state = S_LINE;
     }        
     
 }
@@ -179,32 +134,4 @@ void line::update() {
     } else {
         sampleTimer.update();    
     }
-
-    if(present() && !ready()) {
-        if(compressorTimer.event()) {
-            Serial.print("Power ready to apply\n");
-            if(genConnect()) {
-                Serial.print("Connecting generator load\n");
-                state = S_RGEN;
-            } else {
-                Serial.print("Connecting line load\n");
-                state = S_RLIN;
-            }
-        } else {
-            compressorTimer.update();
-        }
-    } else {
-        compressorTimer.reset();
-    }
-   
-    if(genConnect() && !ready()) {
-        if(genTimer.event()) {
-            Serial.print("Generator warmed up ...\n");
-            state = S_GRED;
-        } else {
-            genTimer.update();
-        }          
-    } else {
-         genTimer.reset();
-    }       
 }

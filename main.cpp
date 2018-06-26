@@ -10,19 +10,15 @@
 #define MINUTE 60
 #define BAUDRATE 9600
 
-unsigned char ledPin = 13;              // LED connected to digital pin 13
-unsigned char phase[3] = {P0,P1,G0};    // phase input pins, 0, 1, 2
-unsigned char conn[3] = {14,11,16};     // phase selector pins, 0, 1, 2
-unsigned char generator = 12;           // generator start signal output pin
-unsigned char phaseStatus[3] = {1,1,1};
+unsigned char ledPin = 13;                             // LED connected to digital pin 13
+unsigned char phase[LINES] = {P0,P1,P2,G0};            // phase input pins, 0, 1, 2, generator (input)
+unsigned char conn[LINES] = {P0_P,P1_P,P2_P,G0_P};     // phase selector pins, 0, 1, 2, generator (output)
+unsigned char generator = 12;                          // generator start signal output pin
 unsigned char vBatPin = A0;
 float vBat = 0;
-unsigned char compDelay = 0;
 unsigned char error = 0;
 timer blinkTimer;
 timer batTimer;
-timer compTimer;
-timer printTimer;
 line lineControl;
 
 toggle blinker;
@@ -57,8 +53,6 @@ void setup() {
    
 	blinkTimer.setMS(NO_ERROR);
 	batTimer.setS(MINUTE);
-	compTimer.setS(COMP_DELAY);
-    printTimer.setMS(500);
     readVBat();
     Serial.print("Ok\n");
     Serial.print("vBat: ");
@@ -93,7 +87,7 @@ void batDrive() {
 }
 
 void errorDrive() {
-    if(error == 1 || compDelay == 1) {
+    if(error == 1) {
         blinkTimer.setMS(ON_ERROR);         
     } else {
         blinkTimer.setMS(NO_ERROR);         
@@ -105,7 +99,6 @@ void loop() {
     batDrive();
     errorDrive();
     lineControl.update();
-//    phaseUpdate();
 }
 
 int main(void) {
