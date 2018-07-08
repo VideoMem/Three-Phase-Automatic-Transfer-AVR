@@ -43,3 +43,23 @@ main loop:
 
 */
 
+#ifndef PLC_H
+#define PLC_H
+#define PLC_VERSION "0"
+#include "generator.h"
+
+class Plc {
+    public:
+        Plc();
+        void setup();               //generic module handlers, setup()
+        void update(bool status, bool started);   //generic module handlers, update()
+        void reset();               //generic module handlers, reset()     
+        bool halt();
+    private:
+        Generator generator;
+        bool inputStatus; 
+
+};
+
+#endif
+

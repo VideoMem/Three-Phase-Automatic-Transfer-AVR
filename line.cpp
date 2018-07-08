@@ -4,9 +4,9 @@
 #define DIS 0
 
 void line::setup() {
-    // some[size] = phases[size]; many[size] = some[size] * 3
+    // some[LINES] = phases[LINES]; many[LINES] = LINES * LINES
     unsigned char some[LINES] = {CON,CON,CON,CON};
-    unsigned char many[INITP] = {CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON};
+    unsigned char many[INITP] = {CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON,CON};
     unsigned char phases[LINES] = {P0,P1,P2,G0};
     sampleIndex = 0;
     memcpy(status,some,sizeof(unsigned char) * LINES);
@@ -18,7 +18,7 @@ void line::setup() {
 
 //generator start signal
 bool line::genStart() {
-    if(status[3] == DIS)
+    if(status[3] == DIS && !Ok())
         return true;
     else
         return false;
@@ -36,6 +36,10 @@ bool line::Ok() {
         return true;
 }
 
+bool line::halt() {
+   return plc.halt();
+}
+
 void line::generatorMSG() {
     Serial.print("No power present at the mains, starting generator ...\n");
 }
@@ -51,6 +55,7 @@ void line::abnormalMSG() {
 line::line() {
     setup();    
 }
+
 
 //phase sample & status update
 bool line::checkPhases() {
@@ -158,4 +163,5 @@ void line::update() {
     } else {
         sampleTimer.update();    
     }
+    plc.update(!Ok(),genStarted());
 }

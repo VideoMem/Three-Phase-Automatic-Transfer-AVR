@@ -2,9 +2,9 @@
 #include "timers.h"
 #include "toggle.h"
 #include "line.h"
+#include "DrumTimer.h"
 
 #define BOOT_DELAY 6000
-#define COMP_DELAY 180
 #define NO_ERROR 500
 #define ON_ERROR 50
 #define MINUTE 60
@@ -14,13 +14,14 @@ unsigned char ledPin = 13;                             // LED connected to digit
 unsigned char phase[LINES] = {P0,P1,P2,G0};            // phase input pins, 0, 1, 2, generator (input)
 unsigned char conn[LINES] = {P0_P,P1_P,P2_P,G0_P};     // phase selector pins, 0, 1, 2, generator (output)
 unsigned char generator = 12;                          // generator start signal output pin
+unsigned char generatorHalt = 7;                       // generator halt  signal output pin
 unsigned char vBatPin = A0;
 float vBat = 0;
 unsigned char error = 0;
+
 timer blinkTimer;
 timer batTimer;
 line lineControl;
-
 toggle blinker;
 
 void readVBat() {
@@ -48,9 +49,8 @@ void setup() {
     pinMode(ledPin, OUTPUT);
 
     initPins(phase, INPUT, LINES);
-    //initPins(conn, OUTPUT, 3);
     pinMode(generator, OUTPUT);
-   
+    pinMode(generatorHalt, OUTPUT);
 	blinkTimer.setMS(NO_ERROR);
 	batTimer.setS(MINUTE);
     readVBat();
@@ -66,6 +66,7 @@ void setup() {
 
 void outputPatch() {
     lineControl.genStart() ? digitalWrite(generator,HIGH): digitalWrite(generator,LOW);
+    lineControl.halt() ? digitalWrite(generatorHalt,HIGH): digitalWrite(generatorHalt,LOW);
 }
 
 void ledDrive() {

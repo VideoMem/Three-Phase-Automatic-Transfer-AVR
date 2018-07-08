@@ -1,11 +1,12 @@
 /*
 *  line.h
 */
-#include "timers.h"
-
 #ifndef LINE_H
 #define LINE_H
 #define LINE_VERSION "0"
+
+#include "timers.h"
+#include "plc.h"
 
 //line input pins Phase 0, Phase 1, Phase 2, Generator Phase
 #define P0 9
@@ -38,9 +39,13 @@ class line {
         bool genStarted();
         bool Ok();
         bool fail();
+        bool halt();
+
         void update();
         void setup();
+
     private:
+        Plc plc;
         timer sampleTimer;
         unsigned char sampleIndex;
         unsigned char sample[INITP];
