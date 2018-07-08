@@ -28,6 +28,10 @@ bool line::genStarted() {
     return !genStart();
 }
 
+bool line::genConnect() {
+    return generator.connect(); 
+}
+
 // line present (Lp)
 bool line::Ok() {
     if(status[0] == DIS || status[1] == DIS || status[2] == DIS)
@@ -37,7 +41,7 @@ bool line::Ok() {
 }
 
 bool line::halt() {
-   return plc.halt();
+   return generator.halt();
 }
 
 void line::generatorMSG() {
@@ -163,5 +167,5 @@ void line::update() {
     } else {
         sampleTimer.update();    
     }
-    plc.update(!Ok(),genStarted());
+    generator.update(!Ok(),genStarted());
 }

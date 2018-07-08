@@ -1,69 +1,79 @@
 #include "generator.h"
+#include <Arduino.h>
 //generator warmup 5 minutes (300 seconds)
 #define GEN_SAFE 30
 
-//generator cooldown 15 minutes (900 seconds)
-#define GEN_COOL 90
+//generator guard 10 minutes (600 seconds)
+#define GEN_GUARD 60
 
-#define STATE_HALTED 0
-#define STATE_WARMUP 1
+//generator cooldown 5 minutes (300 seconds)
+#define GEN_COOL 30
+
+#define STATE_WARMUP 0
+#define STATE_GUARD 1
 #define STATE_COOLDOWN 2
-#define STATE_WARM 3
+#define STATE_HALTED 3
 
 
 void Generator::setup() {
-    state = STATE_HALTED;
-    connectS = false;   
-    warmup.setS(GEN_SAFE);
-    cooldown.setS(GEN_COOL);
-}
-
-bool Generator::in_warmup() {
-    if (state == STATE_WARMUP) 
-        return true;
-    else 
-        return false;
-}
-
-bool Generator::in_cooldown() {
-    if (state == STATE_COOLDOWN) 
-        return true;
-    else
-        return false;
+    cycleTimer.setS(GEN_SAFE,0);
+    cycleTimer.setS(GEN_GUARD,1);
+    cycleTimer.setS(GEN_COOL,2);
+    cycleTimer.loop(false);
 }
 
 bool Generator::in_halt() {
-    if (state == STATE_HALTED) 
+    if (cycleTimer.state() == STATE_HALTED) 
         return true;
     else
         return false;
 }
 
 void Generator::update(bool startS, bool started) {
-    switch(state) {
+/*    if(cycleTimer.event()) {
+        Serial.print("Generator event: ");
+        Serial.print(cycleTimer.state());
+        Serial.print("\n");
+    }*/
+    lineStatus = startS;
+    switch(cycleTimer.state()) {
         case STATE_HALTED:
-            startS ? state = STATE_WARMUP : state = STATE_COOLDOWN;
+            cycleTimer.reset();
         break;
         case STATE_WARMUP:
-            warmup.event() ? state = STATE_WARM: state = STATE_WARMUP; 
+            if (started && startS)
+                cycleTimer.update();
+            else
+                cycleTimer.reset();
+        break;
+        case STATE_GUARD:
+            if(started) {
+                if (!startS)
+                    cycleTimer.update();
+                else
+                    cycleTimer.clear();
+            } else {
+                cycleTimer.reset();
+            }
         break;
         case STATE_COOLDOWN:
-            cooldown.event() ? state = STATE_HALTED: state = STATE_COOLDOWN; 
-        break;
-        case STATE_WARM:
-            connectS = true;
+            if(started) {
+                if (!startS)
+                    cycleTimer.update();
+                else
+                    cycleTimer.reset();
+            } else {
+                cycleTimer.reset();
+            }
         break;
         default:
-            state = STATE_HALTED;
+            cycleTimer.reset();
         break;            
     }
-    in_warmup() ? warmup.update() : warmup.reset();
-    in_cooldown() ? cooldown.update() : cooldown.reset();
 }
 
 void Generator::reset() {
-    warmup.reset();
-    cooldown.reset();
+    cycleTimer.reset();
 }
 
 Generator::Generator() {
@@ -71,10 +81,23 @@ Generator::Generator() {
 }
 
 bool Generator::connect() {
-    return connectS;
+    if(cycleTimer.state() == STATE_GUARD)
+        return true;
+    else
+        return false;
+}
+
+bool Generator::false_warmup() {
+    if(cycleTimer.state() == STATE_WARMUP && lineStatus == false)
+        return true;
+    else
+        return false;
 }
 
 bool Generator::halt() {
-    return in_halt();
+    if (in_halt() || false_warmup())
+        return true;
+    else
+        return false;
 }
 

@@ -49,6 +49,7 @@ void setup() {
     pinMode(ledPin, OUTPUT);
 
     initPins(phase, INPUT, LINES);
+    initPins(conn, OUTPUT, LINES);
     pinMode(generator, OUTPUT);
     pinMode(generatorHalt, OUTPUT);
 	blinkTimer.setMS(NO_ERROR);
@@ -67,6 +68,7 @@ void setup() {
 void outputPatch() {
     lineControl.genStart() ? digitalWrite(generator,HIGH): digitalWrite(generator,LOW);
     lineControl.halt() ? digitalWrite(generatorHalt,HIGH): digitalWrite(generatorHalt,LOW);
+    lineControl.genConnect() ? digitalWrite(G0_P,HIGH): digitalWrite(G0_P,LOW);
 }
 
 void ledDrive() {

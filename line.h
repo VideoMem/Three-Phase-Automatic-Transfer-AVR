@@ -6,7 +6,7 @@
 #define LINE_VERSION "0"
 
 #include "timers.h"
-#include "plc.h"
+#include "generator.h"
 
 //line input pins Phase 0, Phase 1, Phase 2, Generator Phase
 #define P0 9
@@ -37,6 +37,7 @@ class line {
         line();
         bool genStart();
         bool genStarted();
+        bool genConnect();
         bool Ok();
         bool fail();
         bool halt();
@@ -45,7 +46,7 @@ class line {
         void setup();
 
     private:
-        Plc plc;
+        Generator generator;
         timer sampleTimer;
         unsigned char sampleIndex;
         unsigned char sample[INITP];
