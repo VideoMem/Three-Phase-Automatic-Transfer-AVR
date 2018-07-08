@@ -1,13 +1,13 @@
 #include "generator.h"
 #include <Arduino.h>
 //generator warmup 5 minutes (300 seconds)
-#define GEN_SAFE 30
+#define GEN_SAFE 3
 
 //generator guard 10 minutes (600 seconds)
-#define GEN_GUARD 60
+#define GEN_GUARD 6
 
 //generator cooldown 5 minutes (300 seconds)
-#define GEN_COOL 30
+#define GEN_COOL 3
 
 #define STATE_WARMUP 0
 #define STATE_GUARD 1
@@ -30,7 +30,7 @@ bool Generator::in_halt() {
 }
 
 void Generator::update(bool startS, bool started) {
-/*    if(cycleTimer.event()) {
+    /*if(cycleTimer.event()) {
         Serial.print("Generator event: ");
         Serial.print(cycleTimer.state());
         Serial.print("\n");
