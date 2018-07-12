@@ -230,23 +230,32 @@ unsigned char line::inputSelect() {
     return currentPhase;
 }
 
-//main control loop
-void line::update() {
+void line::changePhase() {
+    unsigned char oldPhase = currentPhase;
+    if(changeTimer.event()) {
+        changeTimer.reset();
+        currentPhase = phaseSelect();
+        //delta Phase
+        if (oldPhase != currentPhase) 
+            outVoltages();
+    } else {
+        changeTimer.update();
+    }
+}
 
-    if(sampleTimer.event()) {
+void line::samplePhase() {
+   if(sampleTimer.event()) {
         sampleTimer.reset();
         if(checkPhases()) 
             phaseUpdate();
     } else {
         sampleTimer.update();    
     }
+}
 
-    if(changeTimer.event()) {
-        changeTimer.reset();
-        currentPhase = phaseSelect();
-    } else {
-        changeTimer.update();
-    }
- 
+//main control loop
+void line::update() {
+    samplePhase();
+    changePhase();
     generator.update(!Ok(),genStarted());
 }

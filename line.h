@@ -79,6 +79,8 @@ class line {
         void mainsMSG();
         void abnormalMSG();
         void outVoltages();
+        void samplePhase();
+        void changePhase();
 };
 
 #endif
