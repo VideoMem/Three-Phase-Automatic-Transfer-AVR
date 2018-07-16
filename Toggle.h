@@ -1,5 +1,5 @@
 /*
-*  toggle.h
+*  Toggle.h
 *
 */
 
@@ -7,9 +7,9 @@
 #define TOGGLE_H
 #define TOGGLE_VERSION "0"
 
-class toggle {
+class Toggle {
     public: 
-        toggle();
+        Toggle();
         bool value();       
         void reset();
         void set();

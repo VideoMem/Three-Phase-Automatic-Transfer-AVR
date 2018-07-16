@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include "timers.h"
-#include "toggle.h"
-#include "line.h"
-#include "DrumTimer.h"
+#include "Timers.h"
+#include "Toggle.h"
+#include "Line.h"
+//#include "DrumTimer.h"
 
 #define BOOT_DELAY 6000
 #define NO_ERROR 500
@@ -25,11 +25,11 @@ float vBat = 0;
 unsigned char error = 0;
 bool powerEnable = false;
 
-timer blinkTimer;
-timer batTimer;
-timer compTimer;
-line lineControl;
-toggle blinker;
+Timer blinkTimer;
+Timer batTimer;
+Timer compTimer;
+Line lineControl;
+Toggle blinker;
 
 void readVBat() {
     int aux = analogRead(vBatPin);

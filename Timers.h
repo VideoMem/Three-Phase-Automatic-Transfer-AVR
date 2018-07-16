@@ -7,9 +7,9 @@
 #define TIMERS_H
 #define TIMERS_VERSION "0"
 
-class timer {
+class Timer {
  public: 
-   timer();
+   Timer();
    void setMS(unsigned long ms);
    void setS(unsigned int s);
    void reset();

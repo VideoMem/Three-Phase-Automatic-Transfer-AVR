@@ -1,11 +1,11 @@
 #include <Arduino.h>
-#include "line.h"
+#include "Line.h"
 #define VDEF 0.0
 #define CON 1
 #define DIS 0
 
 
-void line::setup() {
+void Line::setup() {
     // some[LINES] = phases[LINES]; many[LINES] = LINES * LINES
     // initialize sample memory
     unsigned char some[LINES] = {CON,CON,CON,CON};
@@ -29,28 +29,28 @@ void line::setup() {
 }
 
 //generator start signal
-bool line::genStart() {
+bool Line::genStart() {
     if(status[3] == DIS && !Ok())
         return true;
     else
         return false;
 }
 
-bool line::genStarted() {
+bool Line::genStarted() {
     return !genStart();
 }
 
-bool line::genConnect() {
+bool Line::genConnect() {
     return generator.connect(); 
 }
 
-float line::vThr(unsigned char vindex) {
+float Line::vThr(unsigned char vindex) {
     float aux = voltages[vindex] * CHANGE_THRESHOLD / 100.0;
     float log = voltages[vindex] - aux;
     return log;
 }
 
-unsigned char line::phaseSelect() {
+unsigned char Line::phaseSelect() {
     if(vThr(0) > voltages[1]) {
         if (vThr(2) > voltages[0])
             return 2;
@@ -66,41 +66,41 @@ unsigned char line::phaseSelect() {
 
 
 // line present (Lp)
-bool line::Ok() {
+bool Line::Ok() {
     if(status[0] == DIS || status[1] == DIS || status[2] == DIS)
         return false;
     else
         return true;
 }
 
-bool line::halt() {
+bool Line::halt() {
    return generator.halt();
 }
 
-void line::generatorMSG() {
+void Line::generatorMSG() {
     Serial.print("No power present at the mains, starting generator ...\n");
 }
 
-void line::mainsMSG() {
+void Line::mainsMSG() {
     Serial.print("Power present, reconnecting to the mains ...\n");          
 }
 
-void line::abnormalMSG() {
+void Line::abnormalMSG() {
     Serial.print("Abnormal power input!\n");
 }
 
-line::line() {
+Line::Line() {
     setup();    
 }
 
-float line::voltageRead(unsigned char pin) {
+float Line::voltageRead(unsigned char pin) {
     int aux = analogRead(pin);
     //value for three phase 440v 
     float vRead = 254.03 * (float) aux / 1023.0;
     return vRead;
 }
 
-void line::outVoltages() {
+void Line::outVoltages() {
     unsigned char i = 0;
  
     for(i=0; i < LINES; i++) {
@@ -125,7 +125,7 @@ void line::outVoltages() {
 }
 
 //phase sample & status update
-bool line::checkPhases() {
+bool Line::checkPhases() {
     unsigned char phaseChange[LINES]  = {DIS,DIS,DIS,DIS};
     unsigned char i = 0;
     unsigned char j = 0;
@@ -162,7 +162,7 @@ bool line::checkPhases() {
 }
 
 //abnormal line condition
-bool line::fail() {
+bool Line::fail() {
 
     if(status[2] == DIS && status[0] == CON && status[1] == DIS) {
         abnormalMSG();
@@ -198,7 +198,7 @@ bool line::fail() {
 }
 
 //phase update log
-void line::phaseUpdate() {
+void Line::phaseUpdate() {
     unsigned char i,j = 0;
     bool failure = fail();
 
@@ -226,11 +226,11 @@ void line::phaseUpdate() {
     outVoltages();       
 }
 
-unsigned char line::inputSelect() {
+unsigned char Line::inputSelect() {
     return currentPhase;
 }
 
-void line::changePhase() {
+void Line::changePhase() {
     unsigned char oldPhase = currentPhase;
     if(changeTimer.event()) {
         changeTimer.reset();
@@ -243,7 +243,7 @@ void line::changePhase() {
     }
 }
 
-void line::samplePhase() {
+void Line::samplePhase() {
    if(sampleTimer.event()) {
         sampleTimer.reset();
         if(checkPhases()) 
@@ -254,7 +254,7 @@ void line::samplePhase() {
 }
 
 //main control loop
-void line::update() {
+void Line::update() {
     samplePhase();
     changePhase();
     generator.update(!Ok(),genStarted());

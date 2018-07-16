@@ -1,5 +1,5 @@
-build-nano328/generator.cpp.o: generator.cpp generator.h DrumTimer.h \
- timers.h /usr/share/arduino/hardware/arduino//cores/arduino/Arduino.h \
+build-nano328/Generator.cpp.o: Generator.cpp Generator.h DrumTimer.h \
+ Timers.h /usr/share/arduino/hardware/arduino//cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/WCharacter.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/WString.h \

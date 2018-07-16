@@ -1,4 +1,4 @@
-build-nano328/timers.cpp.o: timers.cpp timers.h \
+build-nano328/Timers.cpp.o: Timers.cpp Timers.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/WCharacter.h \

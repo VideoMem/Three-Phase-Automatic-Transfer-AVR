@@ -1,4 +1,4 @@
-#include "generator.h"
+#include "Generator.h"
 #include <Arduino.h>
 //generator warmup 5 minutes (300 seconds)
 #define GEN_SAFE 3

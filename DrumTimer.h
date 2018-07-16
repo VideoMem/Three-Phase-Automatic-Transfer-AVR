@@ -7,7 +7,7 @@
 #define DRUM_TIMER_H
 #define DRUM_TIMER_VERSION "0"
 #define DRUM_SLOTS 4
-#include "timers.h"
+#include "Timers.h"
 
 class DrumTimer {
    public: 
@@ -23,7 +23,7 @@ class DrumTimer {
       unsigned char state();
       void loop(bool enable);
    private:
-      timer lapTimer;
+      Timer lapTimer;
       unsigned long preset[DRUM_SLOTS];
       unsigned char status;
       unsigned char currentSlot;

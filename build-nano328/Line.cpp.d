@@ -1,4 +1,4 @@
-build-nano328/line.cpp.o: line.cpp \
+build-nano328/Line.cpp.o: Line.cpp \
  /usr/share/arduino/hardware/arduino//cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/WCharacter.h \
@@ -10,4 +10,4 @@ build-nano328/line.cpp.o: line.cpp \
  /usr/share/arduino/hardware/arduino//cores/arduino/new.h \
  /usr/share/arduino/hardware/arduino//variants/eightanaloginputs/pins_arduino.h \
  /usr/share/arduino/hardware/arduino//variants/eightanaloginputs/../standard/pins_arduino.h \
- line.h timers.h generator.h DrumTimer.h
+ Line.h Timers.h Generator.h DrumTimer.h

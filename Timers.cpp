@@ -1,7 +1,7 @@
-#include "timers.h"
+#include "Timers.h"
 #include <Arduino.h>
 
-timer::timer() {
+Timer::Timer() {
   elapsed = 0;
   enabled = 0;
   preset = 0;
@@ -9,7 +9,7 @@ timer::timer() {
   trigged = 0;
 }
 
-void timer::check() {
+void Timer::check() {
  if (preset == 0)
     enabled = 0; 
  else
@@ -20,7 +20,7 @@ void timer::check() {
     } 
 }
 
-void timer::update() {
+void Timer::update() {
    unsigned long read = millis(); 
 
    if (enabled == 1) {   
@@ -36,15 +36,15 @@ void timer::update() {
    check();
 }
 
-unsigned long timer::valueMS() {
+unsigned long Timer::valueMS() {
   return elapsed; 
 }
 
-unsigned long timer::valueS() {
+unsigned long Timer::valueS() {
   return elapsed / 1000; 
 }
 
-int timer::event() {
+int Timer::event() {
   if (trigged == 1) {
      trigged = 0;
      enabled = 1;
@@ -53,27 +53,27 @@ int timer::event() {
   return 0;
 }
 
-void timer::setMS(unsigned long value) {
+void Timer::setMS(unsigned long value) {
    preset = value; 
    enabled = 1;
 }
 
-void timer::setS(unsigned int s) {
+void Timer::setS(unsigned int s) {
   unsigned long aux = s * 1000;
   setMS(aux);
 }
 
-void timer::reset() {
+void Timer::reset() {
   update();
   elapsed = 0;
   trigged = 0;
 }
 
-void timer::enable() {
+void Timer::enable() {
   reset();
 }
 
-void timer::disable() {
+void Timer::disable() {
   reset();
   enabled = 0;
 }

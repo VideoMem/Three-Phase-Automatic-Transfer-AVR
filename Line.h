@@ -5,8 +5,8 @@
 #define LINE_H
 #define LINE_VERSION "0"
 
-#include "timers.h"
-#include "generator.h"
+#include "Timers.h"
+#include "Generator.h"
 #include <Arduino.h>
 
 //discrete line input presence pins Phase 0, Phase 1, Phase 2, Generator Phase
@@ -45,9 +45,9 @@
 //voltage threshold %
 #define CHANGE_THRESHOLD 10.0
 
-class line {
+class Line {
     public:
-        line();
+        Line();
         bool genStart();
         bool genStarted();
         bool genConnect();
@@ -60,8 +60,8 @@ class line {
         unsigned char inputSelect();
     private:
         Generator generator;
-        timer sampleTimer;
-        timer changeTimer;
+        Timer sampleTimer;
+        Timer changeTimer;
         float vThr(unsigned char vindex);
         unsigned char phaseSelect();
         unsigned char sampleIndex;

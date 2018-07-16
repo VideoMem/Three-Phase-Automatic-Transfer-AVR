@@ -1,22 +1,22 @@
-#include "toggle.h"
+#include "Toggle.h"
 
-toggle::toggle() {
+Toggle::Toggle() {
     status = false;
 }
 
-void toggle::set() {
+void Toggle::set() {
     status = true;
 }
 
-void toggle::reset() {
+void Toggle::reset() {
     status = false;
 }
 
-bool toggle::value() {
+bool Toggle::value() {
     return status;
 }
 
-void toggle::change() {
+void Toggle::change() {
     if(status == false)
         status = true;
     else
