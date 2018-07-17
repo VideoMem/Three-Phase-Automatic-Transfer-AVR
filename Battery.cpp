@@ -24,9 +24,7 @@ void Battery::check() {
 }
 
 void Battery::logAlarm() {
-    Serial.print("vBat LOW!: ");
-    Serial.print(vBat);                
-    Serial.print("\n");
+    Serial.print("vBat LOW!\n");
 }
 
 
@@ -41,8 +39,6 @@ void Battery::update() {
         check();
         if(alarm())
             logAlarm();
-        else
-            logValue();              
         batTimer.reset();
     }
     batTimer.update();
