@@ -2,7 +2,7 @@
 #include "Timers.h"
 #include "Toggle.h"
 #include "Line.h"
-//#include "DrumTimer.h"
+#include "Battery.h"
 
 #define BOOT_DELAY 6000
 #define NO_ERROR 500
@@ -10,7 +10,7 @@
 #define MINUTE 60
 #define BAUDRATE 9600
 
-//safe recconect delay for refrigerator compressors 5 minutes (300 seconds)
+//safe reconnect delay for refrigerator compressors 5 minutes (300 seconds)
 #define COMPRESSOR_DELAY 30
 
 unsigned char ledPin = 13;                             // LED connected to digital pin 13
@@ -18,31 +18,18 @@ unsigned char phase[LINES] = {P0,P1,P2,G0};            // phase input pins, 0, 1
 unsigned char conn[LINES] = {P0_P,P1_P,P2_P,G0_P};     // phase selector pins, 0, 1, 2, generator (output)
 unsigned char generator = 12;                          // generator start signal output pin
 unsigned char generatorHalt = 7;                       // generator halt  signal output pin
-unsigned char vBatPin = A0;
+
 unsigned char analogs[LINES] = {P0_A,P1_A,P2_A,G0_A};
 
-float vBat = 0;
 unsigned char error = 0;
 bool powerEnable = false;
 
 Timer blinkTimer;
-Timer batTimer;
 Timer compTimer;
+
+Battery battery;
 Line lineControl;
 Toggle blinker;
-
-void readVBat() {
-    int aux = analogRead(vBatPin);
-    vBat = 16.0 * (float) aux / 1023.0;
-    if(vBat <= 12.4) {
-        error = 1;
-        Serial.print("vBat LOW!: ");
-        Serial.print(vBat);                
-        Serial.print("\n");
-    } else {    
-        error = 0;
-    }
-}
 
 void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
     unsigned char i = 0;
@@ -52,7 +39,7 @@ void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
 
 void setup() {
     Serial.begin(BAUDRATE); 
-    Serial.print("Initializing ... ");
+    Serial.print("Initializing ... \n");
     pinMode(ledPin, OUTPUT);
 
     initPins(phase, INPUT, LINES);
@@ -61,14 +48,9 @@ void setup() {
     pinMode(generator, OUTPUT);
     pinMode(generatorHalt, OUTPUT);
 	blinkTimer.setMS(NO_ERROR);
-	batTimer.setS(MINUTE);
 	compTimer.setS(COMPRESSOR_DELAY);
-    readVBat();
-    Serial.print("Ok\n");
-    Serial.print("vBat: ");
-    Serial.print(vBat);                
-    Serial.print("\n");  
-    Serial.print("Boot Delay ... ");
+    battery.check();
+
     Serial.flush();
     delay(BOOT_DELAY);
     Serial.print("Done\n");
@@ -112,13 +94,6 @@ void ledDrive() {
     blinkTimer.update();
 }
 
-void batDrive() {
-    if(batTimer.event()) {
-        readVBat();              
-        batTimer.reset();
-    }
-    batTimer.update();
-}
 
 void errorDrive() {
     if(error == 1) {
@@ -141,7 +116,7 @@ void powerDrive() {
 
 void loop() {
     ledDrive();
-    batDrive();
+    battery.update();
     errorDrive();
     powerDrive();
     lineControl.update();
