@@ -1,4 +1,5 @@
 build-nano328/Battery.cpp.o: Battery.cpp Battery.h Module.h Timers.h \
+ Manchester.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/Arduino.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/binary.h \
  /usr/share/arduino/hardware/arduino//cores/arduino/WCharacter.h \

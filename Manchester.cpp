@@ -2337,7 +2337,17 @@ void Manchester::print(const char* string) {
     }
 }
 
+void Manchester::print(float arg) {
+    char charVal[10]; 
+    dtostrf(arg, 4, 3, charVal);
+    print(charVal);
+}
 
+void Manchester::print(int arg) {
+    char charVal[10]; 
+    dtostrf(arg, 1, 0, charVal);
+    print(charVal);
+}
 
 
 

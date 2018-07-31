@@ -13,6 +13,8 @@ class Manchester {
         unsigned char* encode(unsigned char byte);
         unsigned char decode(unsigned char* encoded);
         void print(const char* string);
+        void print(float arg);
+        void print(int arg);
     protected:
         unsigned char buffer[2];
         void table(unsigned char index);

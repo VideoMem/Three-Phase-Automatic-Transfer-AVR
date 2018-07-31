@@ -24,14 +24,14 @@ void Battery::check() {
 }
 
 void Battery::logAlarm() {
-    Serial.print("vBat LOW!\n");
+    manSerial.print("vBat LOW!\n");
 }
 
 
 void Battery::logValue() {
-    Serial.print("vBat: ");
-    Serial.print(vBat);  
-    Serial.print("\n");  
+    manSerial.print("vBat: ");
+    manSerial.print(vBat);  
+    manSerial.print("\n");  
 }
 
 void Battery::update() {

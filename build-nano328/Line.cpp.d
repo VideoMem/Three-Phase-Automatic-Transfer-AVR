@@ -10,4 +10,4 @@ build-nano328/Line.cpp.o: Line.cpp \
  /usr/share/arduino/hardware/arduino//cores/arduino/new.h \
  /usr/share/arduino/hardware/arduino//variants/eightanaloginputs/pins_arduino.h \
  /usr/share/arduino/hardware/arduino//variants/eightanaloginputs/../standard/pins_arduino.h \
- Line.h Timers.h Generator.h DrumTimer.h
+ Line.h Timers.h Generator.h DrumTimer.h Manchester.h

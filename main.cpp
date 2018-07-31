@@ -31,6 +31,7 @@ Timer compTimer;
 Battery battery;
 Line lineControl;
 Toggle blinker;
+Manchester manSerial;
 
 void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
     unsigned char i = 0;
@@ -39,11 +40,8 @@ void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
 }
 
 void setup() {
-    Manchester manSerial;
     Serial.begin(BAUDRATE); 
-    manSerial.print("Manchester Test\n");
-    while(true);
-    Serial.print("Initializing ... \n");
+    manSerial.print("Initializing ... \n");
     pinMode(ledPin, OUTPUT);
 
     initPins(phase, INPUT, LINES);
@@ -57,7 +55,7 @@ void setup() {
 
     Serial.flush();
     delay(BOOT_DELAY);
-    Serial.print("Done\n");
+    manSerial.print("Done\n");
 }
 
 void lineSelect() {

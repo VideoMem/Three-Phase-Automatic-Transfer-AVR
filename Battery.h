@@ -8,7 +8,7 @@
 #define BATTERY_VERSION "0"
 #include "Module.h"
 #include "Timers.h"
-//#include <Arduino.h>
+#include "Manchester.h"
 
 //input pin
 #define VBATPIN A0
@@ -28,6 +28,7 @@ class Battery: public Module {
     protected:
         float vBat = 0;
         Timer batTimer;
+        Manchester manSerial;
     private:
         void setup();
 

@@ -3,6 +3,7 @@
 #define GENERATOR_VERSION "0"
 
 #include "DrumTimer.h"
+#include "Manchester.h"
 
 class Generator {
     public:
@@ -16,7 +17,9 @@ class Generator {
         DrumTimer cycleTimer;
         bool in_halt(); 
         bool false_warmup();    //halt generator
-        bool lineStatus;          
+        bool lineStatus;
+   protected:
+        Manchester manSerial;               
 };  
 
 

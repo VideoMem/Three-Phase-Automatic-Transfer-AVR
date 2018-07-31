@@ -8,6 +8,7 @@
 #include "Timers.h"
 #include "Generator.h"
 #include <Arduino.h>
+#include "Manchester.h"
 
 //discrete line input presence pins Phase 0, Phase 1, Phase 2, Generator Phase
 #define P0 9
@@ -81,6 +82,8 @@ class Line {
         void outVoltages();
         void samplePhase();
         void changePhase();
+    protected:
+        Manchester manSerial;
 };
 
 #endif
