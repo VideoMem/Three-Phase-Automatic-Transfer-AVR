@@ -3,6 +3,7 @@
 #include "Toggle.h"
 #include "Line.h"
 #include "Battery.h"
+#include "Manchester.h"
 
 #define BOOT_DELAY 6000
 #define NO_ERROR 500
@@ -38,7 +39,10 @@ void initPins(unsigned char* pins, unsigned char mode, unsigned char num) {
 }
 
 void setup() {
+    Manchester manSerial;
     Serial.begin(BAUDRATE); 
+    manSerial.print("Manchester Test\n");
+    while(true);
     Serial.print("Initializing ... \n");
     pinMode(ledPin, OUTPUT);
 

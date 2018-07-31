@@ -104,9 +104,33 @@ def cout(maxrange):
         print ""
     print "}"
 
+def pyout(maxrange):
+    arr = table(maxrange)
+    print "def table(index):"
+    print "\tbuf = {}"
+    print ""
+    for i in range(0,maxrange):
+        print "\tif index ==", str(i) + ':'
+        print "\t\t#" , binary(i), '=>' , binary(arr[i]['a']), ':' , binary(arr[i]['b'])
+        print "\t\t" + "buf['a'] = 0x" + hexa(arr[i]['a'])
+        print "\t\t" + "buf['b'] = 0x" + hexa(arr[i]['b'])
+    print ""
+    print "\treturn buf"
+
+    #reverse-table
+    print ""
+    print "def Rtable(a, b):"
+    print ""
+    for i in range(0,maxrange):
+        print "\t#", binary(arr[i]['a']), ':' , binary(arr[i]['b']), '=>', binary(i) 
+        print "\tif (a == 0x" + hexa(arr[i]['a']), 'and b == 0x' + hexa(arr[i]['b']) + "):"
+        print "\t\treturn", str(i)
+        print ""
+    print ""
 
 def main():
-    cout(256)
+    #cout(256)
+    pyout(256)
 
 if __name__ == "__main__":
     main()

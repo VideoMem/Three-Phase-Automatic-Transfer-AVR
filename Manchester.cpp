@@ -1,4 +1,5 @@
 #include "Manchester.h"
+#include <Arduino.h>
 
 void Manchester::table(unsigned char index) {
     unsigned char buf[2];
@@ -2314,6 +2315,7 @@ unsigned char Manchester::Rtable(unsigned char a, unsigned char b) {
     if (a == 0x55 && b == 0x55)
         return 255;
 
+    return 0;
 }
 
 unsigned char* Manchester::encode(unsigned char byte) {
@@ -2321,6 +2323,19 @@ unsigned char* Manchester::encode(unsigned char byte) {
     return buffer;
 }
 
+unsigned char Manchester::decode(unsigned char* encoded) {
+    unsigned char decoded = Rtable(encoded[0], encoded[1]);    
+    return decoded;
+}
+
+void Manchester::print(const char* string) {
+    const char* byte = string;
+    for(byte = string; *byte; ++byte) {
+        table((unsigned char) *byte);
+        Serial.write(buffer[0]);
+        Serial.write(buffer[1]);
+    }
+}
 
 
 
