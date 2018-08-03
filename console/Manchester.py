@@ -1,6 +1,37 @@
 # -*- coding: utf-8 -*-
+import serial
 
 class Manchester(object):
+
+    def __init__(self):
+        self.serial = serial.Serial('/dev/ttyUSB0', 9600)
+
+    def hexa(self, value):
+        string = '%02x' % value
+        return string.upper()
+
+    def receive(self):
+        read = self.serial.read(2)
+        a, b = read
+        translate = self.Rtable(ord(a), ord(b))
+
+        if translate > 0:
+            return chr(translate)
+        else:
+            return ''
+
+    def send(self, str):
+        encoded = '|'
+        for c in str:
+            buf = self.table(ord(c))
+            a = chr(buf['a'])
+            b = chr(buf['b'])
+            self.serial.write(a)
+            self.serial.write(b)
+            encoded += '0x' + self.hexa(buf['a'])\
+                       + ':0x' + self.hexa(buf['b'])
+            encoded += '|'
+        return str + '\n' + encoded
 
     def table(self, index):
         buf = {}
