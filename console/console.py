@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import serial
 import sys
-from manchester import manchester
+from Manchester import Manchester
 
 ser = serial.Serial('/dev/ttyUSB0', 9600)
-man = manchester()
+man = Manchester()
 
 while True:
     read = ser.read(2)

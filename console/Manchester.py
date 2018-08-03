@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class manchester(object):
+class Manchester(object):
 
     def table(self, index):
         buf = {}
