@@ -2,7 +2,7 @@
 
 An Arduino 328p firmware for two phase power supply automatic transfer control.
 
-It features generator start and automatic transfer when it warms. 
+It features generator start/stop and automatic transfer when it warms. 
 
 Also selects single phase input from the best voltage value of three phase power.
 
