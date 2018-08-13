@@ -5,7 +5,7 @@ EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
 Sheet 1 1
-Title "Optoisolated Analog Voltmeter"
+Title "Analog Voltmeter Optocoupler Driver"
 Date "2018-08-12"
 Rev "1.0"
 Comp ""
@@ -270,8 +270,6 @@ Text Notes 2100 1750 0    50   ~ 0
 400V\n
 Text Notes 2150 1950 0    50   ~ 0
 1W\n
-Text Notes 1800 2350 1    50   ~ 0
-1W\n
 Wire Notes Line
 	1300 3150 6400 3150
 Wire Notes Line
@@ -285,7 +283,7 @@ L Device:R R6
 U 1 1 5B70E95E
 P 7600 1700
 F 0 "R6" V 7393 1700 50  0000 C CNN
-F 1 "1M" V 7484 1700 50  0000 C CNN
+F 1 "1M" V 7600 1700 50  0000 C CNN
 F 2 "" V 7530 1700 50  0001 C CNN
 F 3 "~" H 7600 1700 50  0001 C CNN
 	1    7600 1700
@@ -855,4 +853,16 @@ EndData
 $EndBitmap
 Text Notes 6900 4400 0    67   ~ 0
 To optocoupler drive\ninput\n
+Text Notes 750  7550 0    118  ~ 24
+WARNING: This device has direct mains electrical connection! \nRisk of electric shock and/or measurement equipment damage\nif not handled properly.
+Text Notes 7100 7000 0    118  ~ 0
+All the resistor values are in ohms.\n1/4W if no power specified.
+Text Notes 7550 1650 0    50   ~ 0
+1W\n
+Text Notes 7500 2300 0    50   ~ 0
+400V
+Text Notes 1750 2800 0    50   ~ 0
+L\n
+Text Notes 1750 2900 0    50   ~ 0
+N\n
 $EndSCHEMATC
