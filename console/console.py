@@ -7,10 +7,15 @@ exit_flag = 0
 man = Manchester()
 
 def print_help():
-    print "Console command help:"
+    print "Console commands help:"
     print ""
     print "\thelp:", "displays this help"
     print "\tquit:", "exits application"
+    print ""
+    print "Device commands help:"
+    print ""
+    print "\tset parameter <value>:", "sets <value> for given parameter name"
+    print "\tshow parameters:", "show parameters list and short description"
     print ""
 
 def input_read(prompt):
@@ -32,7 +37,6 @@ def prompt():
             exit_flag = True
         if command == "help":
             print_help()
-            exec_command = False
 
         if exec_command:
             print man.send(command)
