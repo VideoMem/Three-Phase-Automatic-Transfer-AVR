@@ -7,19 +7,19 @@ exit_flag = 0
 man = Manchester()
 
 def print_help():
-    print "Console commands help:"
-    print ""
-    print "\thelp:", "displays this help"
-    print "\tquit:", "exits application"
-    print ""
-    print "Device commands help:"
-    print ""
-    print "\tset parameter <value>:", "sets <value> for given parameter name"
-    print "\tshow parameters:", "show parameters list and short description"
-    print ""
+    print("Console commands help:")
+    print("")
+    print("\thelp:", "displays this help")
+    print("\tquit:", "exits application")
+    print("")
+    print("Device commands help:")
+    print("")
+    print("\tset parameter <value>:", "sets <value> for given parameter name")
+    print("\tshow parameters:", "show parameters list and short description")
+    print("")
 
 def input_read(prompt):
-    cmd = raw_input(prompt)
+    cmd = input(prompt)
     return cmd
 
 def prompt_str():
@@ -30,7 +30,7 @@ def prompt():
     global man
 
     while not exit_flag:
-        command = input_read(prompt_str())
+        command = input(prompt_str())
         exec_command = True
         if command == "quit":
             sys.stdout.write("Waiting thread to finish\n" + prompt_str())
@@ -39,7 +39,7 @@ def prompt():
             print_help()
 
         if exec_command:
-            print man.send(command)
+            print(man.send(command))
 
 def echo():
     global exit_flag
@@ -91,4 +91,4 @@ threads.append(thread2)
 for t in threads:
     t.join()
 
-print "Bye!"
+print("Bye!")
