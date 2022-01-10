@@ -4,16 +4,15 @@ import serial
 class Manchester(object):
 
     def __init__(self):
-        self.serial_port = serial.Serial('/dev/ttyUSB0', 9600)
+        self.serial = serial.Serial('/dev/ttyUSB0', 9600)
 
     def hexa(self, value):
         string = '%02x' % value
         return string.upper()
 
     def receive(self):
-        read = self.serial_port.read(2)
-        a, b = read
-        translate = self.Rtable(ord(a), ord(b))
+        a, b = self.serial.read(2)
+        translate = self.Rtable(a, b)
 
         if translate > 0:
             return chr(translate)
@@ -26,8 +25,8 @@ class Manchester(object):
             buf = self.table(ord(c))
             a = chr(buf['a'])
             b = chr(buf['b'])
-            self.serial_port.write(a.encode())
-            self.serial_port.write(b.encode())
+            self.serial.write(a.encode())
+            self.serial.write(b.encode())
             encoded += '0x' + self.hexa(buf['a'])\
                        + ':0x' + self.hexa(buf['b'])
             encoded += '|'
