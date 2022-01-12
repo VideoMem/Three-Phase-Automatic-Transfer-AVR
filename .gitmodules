@@ -1,0 +1,3 @@
+[submodule "libraries/ModbusSlave"]
+	path = libraries/ModbusSlave
+	url = git@github.com:yaacov/ArduinoModbusSlave.git
